@@ -7,6 +7,7 @@
 - Vite 5：开发与相对路径（`base: './'`）生产构建。
 - Web Audio API：用户首次交互后合成点击、移动、连击与结算音效。
 - `localStorage`：保存单机最高分与语言覆盖设置。
+- AlterU Runtime：通过 `@shared/leaderboard` 的按游戏 UUID 独立排行榜接口提交、拉取和展示最高分。
 
 ## 2. 目录结构
 
@@ -15,6 +16,7 @@
 - `src/NoodlePanic/strains.ts`：DNA 基因池、随机菌株生成、危险格形态、移动路线与分裂占格规则。
 - `src/NoodlePanic/NoodlePanic.less`：培养皿、培养液、净化球、DNA 菌株外观与低动态模式。
 - `src/NoodlePanic/i18n/index.ts`：中文/英文文案与本地语言选择。
+- `src/shared/runtime/`、`src/shared/leaderboard/`：AlterU bridge、排行榜 API、榜单弹层与用户资料跳转。
 - `doc/requirements.md`、`doc/visual.md`：玩法和视觉合同。
 - `meta.json`：游戏标题与封面路径元数据。
 
@@ -25,6 +27,8 @@
 - 32 个逻辑格渲染为圆形“净化球”目标：中央 24 个，左右各 4 个外围球。点击在事件发生时立即判定，安全净化球按当前连锁得分，危险格结算。
 - 场景根据 `window.innerWidth / 390` 和 `window.innerHeight / 720` 取较小值缩放；培养皿外 HUD、实验记录结算与皿内可点区域在 390×720 的安全布局中分别定位。
 - 最高分同步写入 `noodle-panic.best`；AudioContext 创建失败不会影响游戏。
+- 每局开始时从排行榜快照记录自己的旧最高分；培养结束后只提交正分，并刷新榜首入口。若新分高于旧纪录，会重新拉榜，向本局刚超过且分数最高的一位其他玩家发送一次 `score_beat` 通知；平台调用失败静默处理。
+- 榜单仅在 AlterU 环境请求数据。完整榜单显示排名、头像、昵称、分数和“我”标识；其他用户行用点击打开资料页，自己的行不可点。站外打开弹层时不请求榜单，改显示下载 AlterU 的 CTA。
 - `prefers-reduced-motion` 将所有非必要动画收敛为即时状态改变。
 
 ## 4. 扩展点
@@ -33,4 +37,4 @@
 - 在 `types.ts` 与 `useNoodlePanic.ts` 修改格子尺寸、时间、关卡推进和得分倍率。
 - 在 `NoodlePanic.less` 调整实验室色温、培养皿/培养液材质、菌株动效和窄屏排版。
 - 在 `i18n/index.ts` 添加语言或改写全部玩家可见文案。
-- 在 `NoodlePanic.tsx` 增加暂停、每日挑战或排行榜等状态；如接入平台存档，应改用本地镜像状态后再持久化。
+- 在 `NoodlePanic.tsx` 增加暂停、每日挑战或赛季奖励等状态；如接入平台存档，应改用本地镜像状态后再持久化。

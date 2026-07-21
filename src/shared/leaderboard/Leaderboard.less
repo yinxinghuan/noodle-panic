@@ -238,7 +238,9 @@
   }
 
   &__medal {
-    font-size: 20px;
+    display: inline-flex;
+    color: var(--medal-color, #FFD700);
+    filter: drop-shadow(0 2px 5px color-mix(in srgb, var(--medal-color, #FFD700) 45%, transparent));
     line-height: 1;
   }
 

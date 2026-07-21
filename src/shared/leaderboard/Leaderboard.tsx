@@ -55,7 +55,6 @@ interface Props {
   fetch: () => Promise<LeaderboardEntry[]>;
 }
 
-const MEDALS = ['🥇', '🥈', '🥉'];
 const MEDAL_COLORS = ['#FFD700', '#C0C0C0', '#CD7F32'];
 const ALTERU_APP_URL = 'https://alteru.app';
 
@@ -93,7 +92,7 @@ export default function Leaderboard({ gameName, isInAigram, onClose, fetch }: Pr
               <div className="lb-header__game">{gameName}</div>
             </div>
           </div>
-          <button className="lb-close" onPointerDown={onClose} aria-label="Close leaderboard"><X size={15} aria-hidden="true" /></button>
+          <button className="lb-close" onClick={onClose} aria-label="Close leaderboard"><X size={15} aria-hidden="true" /></button>
         </div>
 
         {/* List */}
@@ -129,13 +128,13 @@ export default function Leaderboard({ gameName, isInAigram, onClose, fetch }: Pr
           {!loading && isInAigram && entries.map((entry, i) => (
             <div
               key={entry.user_id}
-              className={`lb-row ${entry.isMe ? 'lb-row--me' : ''} ${i < 3 ? 'lb-row--top' : ''} ${isInAigram ? 'lb-row--clickable' : ''}`}
+              className={`lb-row ${entry.isMe ? 'lb-row--me' : ''} ${i < 3 ? 'lb-row--top' : ''} ${isInAigram && !entry.isMe ? 'lb-row--clickable' : ''}`}
               style={i < 3 ? { '--medal-color': MEDAL_COLORS[i] } as CSSProperties : undefined}
-              onClick={isInAigram ? () => openAigramProfile(entry.user_id) : undefined}
+              onClick={isInAigram && !entry.isMe ? () => openAigramProfile(entry.user_id) : undefined}
             >
               <div className="lb-row__rank">
                 {i < 3
-                  ? <span className="lb-row__medal">{MEDALS[i]}</span>
+                  ? <span className="lb-row__medal" aria-label={`Rank ${i + 1}`}><Crown size={18} strokeWidth={2.5} aria-hidden="true" /></span>
                   : <span className="lb-row__num">{i + 1}</span>
                 }
               </div>

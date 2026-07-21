@@ -39,8 +39,8 @@ export default function NoodlePanic() {
     if (game.phase !== 'over' || game.score <= 0 || submittedRunRef.current === game.runId) return
     submittedRunRef.current = game.runId
     submitScore(game.score).then(async () => {
-      if (!canRank || !telegramId || game.score <= preRunBestRef.current) return
       const fresh = await refreshLeaderboard()
+      if (!canRank || !telegramId || game.score <= preRunBestRef.current) return
       const beaten = fresh.filter(row => String(row.user_id) !== String(telegramId) && Number(row.score) < game.score && Number(row.score) > preRunBestRef.current).sort((a, b) => Number(b.score) - Number(a.score))[0]
       if (beaten && events.canEmit) events.trigger('score_beat', { actions: [{ type: 'notify', target_user_id: String(beaten.user_id), message: { template: `{sender_name} 刚刚以 ${game.score} 净化点超越了你的《菌落封锁》记录。`, variables: ['sender_name'] } }] })
     }).catch(() => {})
@@ -73,11 +73,11 @@ export default function NoodlePanic() {
         </div>
       </div>
       <p className="np__hint"><span />{t('hint')}<span /></p>
-      <button className="np__champion" onPointerDown={() => setShowLeaderboard(true)} aria-label="排行榜">
+      {canRank && <button className="np__champion" onPointerDown={() => setShowLeaderboard(true)} aria-label={t('leaderboard')}>
         <Trophy size={15} strokeWidth={2.6} />
         {champion?.avatar_url ? <img src={champion.avatar_url} alt="" draggable={false} /> : null}
-        <span>{champion?.name || '排行榜'}</span>{champion ? <b>{Number(champion.score)}</b> : null}
-      </button>
+        <span>{champion?.name || t('leaderboard')}</span>{champion ? <b>{Number(champion.score).toLocaleString()}</b> : null}
+      </button>}
       {game.combo > 0 && game.combo % 12 === 0 && game.phase === 'playing' && <div className="np__boil" aria-live="assertive">{t('levelUp')}</div>}
       {game.phase !== 'playing' && <div className="np__overlay">
         <div className="np__menu">
