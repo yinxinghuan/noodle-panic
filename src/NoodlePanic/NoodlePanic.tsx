@@ -4,7 +4,7 @@ import { Leaderboard, useGameScore } from '@shared/leaderboard'
 import type { LeaderboardEntry } from '@shared/leaderboard'
 import { telegramId, useGameEvent } from '@shared/runtime'
 import { useNoodlePanic } from './hooks/useNoodlePanic'
-import { FIELD_H, FIELD_W, TOTAL_CELLS } from './types'
+import { FIELD_H, FIELD_W, SEAL_TARGET, TOTAL_CELLS } from './types'
 import { cultureResult, t } from './i18n'
 import { dangerCells } from './strains'
 import Watermark from './components/Watermark'
@@ -57,6 +57,7 @@ export default function NoodlePanic() {
         <div><span>{t('score')}</span><b>{game.score}</b></div><div><span>{t('combo')}</span><b>{game.combo}<em>×{multiplier}</em></b></div><div><span>{t('best')}</span><b>{game.best}</b></div>
       </div>
       <p className="np__strain-readout" aria-live="polite"><b>DNA.{String(game.cycle).padStart(2, '0')}</b><span>{game.strain.code}</span><i className={`np__dna np__dna--${game.strain.tone}`} aria-hidden="true" /></p>
+      <p className="np__seal-progress" aria-live="polite"><span>{t('progress')}</span><b>{game.lit.length}/{SEAL_TARGET}</b></p>
       <div className="np__plate-wrap">
         <div className="np__plate-shadow" aria-hidden="true" />
         <div className="np__plate">
@@ -81,7 +82,7 @@ export default function NoodlePanic() {
       {game.combo > 0 && game.combo % 12 === 0 && game.phase === 'playing' && <div className="np__boil" aria-live="assertive">{t('levelUp')}</div>}
       {game.phase !== 'playing' && <div className="np__overlay">
         <div className="np__menu">
-        {game.phase === 'start' ? <><p className="np__overlay-kicker">CULTURE PROTOCOL</p><h2>{t('subtitle')}</h2><p className="np__overlay-copy">{t('hint')}</p><button className="np__primary" onPointerDown={game.start}>{t('start')}<small>20 SEC</small></button></> : <>{game.reason === 'noodle' ? <><p className="np__overlay-kicker">BACTERIA CONTACT</p><h2>{t('noodle')}</h2></> : <><p className="np__overlay-kicker">CULTURE SUCCESS · {culture.code}</p><h2>{culture.name}</h2><p className="np__overlay-copy">{t('timeup')} · {culture.note}</p></>}<p className="np__result"><b>{game.score}</b><span>{t('score')} {game.score >= game.best && game.score > 0 ? `· ${t('newBest')}` : ''}</span></p><button className="np__primary" onPointerDown={game.start}>{t('replay')}<small>AGAIN</small></button></>}
+        {game.phase === 'start' ? <><p className="np__overlay-kicker">CULTURE PROTOCOL</p><h2>{t('subtitle')}</h2><p className="np__overlay-copy">{t('progress')} 12/12 · {t('hint')}</p><button className="np__primary" onPointerDown={game.start}>{t('start')}<small>12 SEALS · 20 SEC</small></button></> : <>{game.reason === 'noodle' ? <><p className="np__overlay-kicker">BACTERIA CONTACT</p><h2>{t('noodle')}</h2></> : game.reason === 'sealed' ? <><p className="np__overlay-kicker">CULTURE SUCCESS · {culture.code}</p><h2>{culture.name}</h2><p className="np__overlay-copy">{t('timeup')} · {culture.note}</p></> : <><p className="np__overlay-kicker">CONTAINMENT BREACH</p><h2>{t('timeout')}</h2><p className="np__overlay-copy">{t('quotaMiss')} {t('progress')} {game.lit.length}/{SEAL_TARGET}</p></>}<p className="np__result"><b>{game.score}</b><span>{t('score')} {game.score >= game.best && game.score > 0 ? `· ${t('newBest')}` : ''}</span></p><button className="np__primary" onPointerDown={game.start}>{t('replay')}<small>AGAIN</small></button></>}
         </div>
       </div>}
       <button className="np__sound" aria-label={t('sound')} title={t('sound')}><Volume2 size={19} strokeWidth={2.7} /></button>
