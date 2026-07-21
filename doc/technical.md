@@ -17,7 +17,7 @@
 - `src/NoodlePanic/NoodlePanic.less`：培养皿、培养液、净化球、DNA 菌株外观与低动态模式。
 - `src/NoodlePanic/i18n/index.ts`：中文/英文文案与本地语言选择。
 - `src/shared/runtime/`、`src/shared/leaderboard/`：AlterU bridge、排行榜 API、榜单弹层与用户资料跳转。
-- `doc/requirements.md`、`doc/visual.md`：玩法和视觉合同。
+- `doc/requirements.md`、`doc/visual.md`、`doc/publish-record.md`：玩法、视觉与发布状态记录。
 - `meta.json`：游戏标题与封面路径元数据。
 
 ## 3. 核心模块
