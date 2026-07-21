@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { type CSSProperties, useCallback, useEffect, useRef, useState } from 'react'
 import { Trophy, Volume2 } from 'lucide-react'
 import { Leaderboard, useGameScore } from '@shared/leaderboard'
 import type { LeaderboardEntry } from '@shared/leaderboard'
@@ -65,7 +65,7 @@ export default function NoodlePanic() {
           <div className="np__grid" role="grid" aria-label={t('hint')}>
             {Array.from({ length: TOTAL_CELLS }, (_, cell) => {
               const isNoodle = noodle.includes(cell), isLit = game.lit.includes(cell)
-              return <button key={cell} role="gridcell" className={`np__cell ${isNoodle ? `np__cell--noodle np__cell--tone-${game.strain.tone} np__cell--body-${game.strain.body} np__cell--pulse-${game.strain.pulse}` : ''} ${game.isSplitting && isNoodle ? 'np__cell--splitting' : ''} ${isLit ? 'np__cell--lit' : ''} ${game.flash === cell ? 'np__cell--flash' : ''}`} onPointerDown={() => game.tap(cell)} disabled={game.phase !== 'playing'} aria-label={isNoodle ? t('noodle') : `${t('score')} ${cell + 1}`}>
+              return <button key={cell} role="gridcell" className={`np__cell ${isNoodle ? `np__cell--noodle np__cell--tone-${game.strain.tone} np__cell--body-${game.strain.body} np__cell--pulse-${game.strain.pulse} np__cell--route-${game.strain.route}` : ''} ${game.isSplitting && isNoodle ? 'np__cell--splitting' : ''} ${isLit ? 'np__cell--lit' : ''} ${game.flash === cell ? 'np__cell--flash' : ''}`} style={isNoodle ? { '--strain-delay': `${-(cell % 5) * 80}ms` } as CSSProperties : undefined} onPointerDown={() => game.tap(cell)} disabled={game.phase !== 'playing'} aria-label={isNoodle ? t('noodle') : `${t('score')} ${cell + 1}`}>
                 {isLit && <span className="np__stamp">+{Math.min(4, Math.floor(Math.max(0, game.combo - 1) / 5) + 1) * 10}</span>}
                 {game.flash === cell && <span className="np__burst" aria-hidden="true"><i /><i /><i /><i /><i /><i /></span>}
               </button>
